@@ -6,7 +6,7 @@ namespace Contentful.NET.Search.Filters
     /// <summary>
     /// Filter which is used to sort returned content
     /// </summary>
-    public class OrderBySearchFilter : ISearchFilter
+    internal class OrderBySearchFilter : ISearchFilter
     {
         /// <summary>
         /// Always set to 'order' for this filter

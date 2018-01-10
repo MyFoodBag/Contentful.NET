@@ -5,7 +5,7 @@ namespace Contentful.NET.Search.Filters
     /// <summary>
     /// Filter which is used to limit the number of search results returned
     /// </summary>
-    public class LimitSearchFilter : ISearchFilter
+    internal class LimitSearchFilter : ISearchFilter
     {
         /// <summary>
         /// The name of the property to compare to

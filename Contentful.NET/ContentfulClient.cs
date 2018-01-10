@@ -22,7 +22,7 @@ namespace Contentful.NET
     {
 		private readonly bool _preview;
         private readonly string _space;
-        public readonly IHttpClientWrapper HttpClient;
+        internal readonly IHttpClientWrapper HttpClient;
 
         /// <summary>
         /// Creates a new instance of the Contentful Client API
@@ -30,7 +30,7 @@ namespace Contentful.NET
         /// <param name="accessToken">The access token for the provided space</param>
         /// <param name="space">The Space ID to query against</param>
 		/// /// <param name="preview">Whether to use the preview API, false by default</param>
-		public ContentfulClient(string accessToken, string space, bool preview = false)
+		internal ContentfulClient(string accessToken, string space, bool preview = false)
         {
 			_preview = preview;
             _space = space;
@@ -43,7 +43,7 @@ namespace Contentful.NET
         /// </summary>
         /// <param name="space">The Space ID to query against</param>
         /// <param name="configuredHttpClient">The HTTP Client to use, must be preconfigured with Authorization header</param>
-        public ContentfulClient(string space, IHttpClientWrapper configuredHttpClient)
+        internal ContentfulClient(string space, IHttpClientWrapper configuredHttpClient)
         {
             _space = space;
             HttpClient = configuredHttpClient;
@@ -93,7 +93,7 @@ namespace Contentful.NET
         /// <param name="cancellationToken">The cancellation token for the request</param>
         /// <returns>A HttpResponseMessage with the success status code & content</returns>
         /// <exception cref="ContentfulException">Thrown if the request to Contentful returned a status code other than 200 (OK)</exception>
-        public async Task<HttpResponseMessage> MakeGetRequestAsync(string url, CancellationToken cancellationToken)
+        internal async Task<HttpResponseMessage> MakeGetRequestAsync(string url, CancellationToken cancellationToken)
         {
             var result = await HttpClient.GetAsync(url, cancellationToken);
             if (result.IsSuccessStatusCode) return result;
@@ -112,7 +112,7 @@ namespace Contentful.NET
         /// <param name="limit">(Optional) The number of content entries to take</param>
         /// <param name="includeLevels">(Optional) The number of levels of includes which should be requested</param>
         /// <returns>An absolute URL to the Contentful service with the parameters passed through as a query string</returns>
-        public static string GetRequestUrl(string baseUri, string id = null, IEnumerable<ISearchFilter> filters = null, string orderByProperty = null, OrderByDirection? orderByDirection = null, int? skip = null, int? limit = null, int? includeLevels = null)
+        internal static string GetRequestUrl(string baseUri, string id = null, IEnumerable<ISearchFilter> filters = null, string orderByProperty = null, OrderByDirection? orderByDirection = null, int? skip = null, int? limit = null, int? includeLevels = null)
         {
             if (AreAllNull(id, filters, orderByProperty, skip, limit, includeLevels)) return baseUri;
             var mergedFilters = filters != null ? filters.ToList() : new List<ISearchFilter>();
@@ -132,7 +132,7 @@ namespace Contentful.NET
         /// </summary>
         /// <param name="properties">A list of properties to check</param>
         /// <returns>True if all properties are null, otherwise false</returns>
-        public static bool AreAllNull(params object[] properties)
+        internal static bool AreAllNull(params object[] properties)
         {
             return properties.All(p => p == null);
         }
@@ -142,7 +142,7 @@ namespace Contentful.NET
         /// </summary>
         /// <param name="filters">The search filters to use for the query string</param>
         /// <returns>A string literal containing the key/value pairs for a query string</returns>
-        public static string GetQueryStringFromSearchFilters(IEnumerable<ISearchFilter> filters)
+        internal static string GetQueryStringFromSearchFilters(IEnumerable<ISearchFilter> filters)
         {
             if (filters == null) return null;
             return string.Join("&",
@@ -157,10 +157,13 @@ namespace Contentful.NET
         /// </summary>
         /// <param name="accessToken">The access token for the required space</param>
         /// <returns>A new instance of HttpClient</returns>
-        public static IHttpClientWrapper BuildHttpClient(string accessToken)
+        internal static IHttpClientWrapper BuildHttpClient(string accessToken)
         {
             var httpClient = new HttpClient();
-            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
+            // NOTE: this is REQUIRED to use the non-legacy cdn url
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
             httpClient.DefaultRequestHeaders.Add("Authorization", string.Format("Bearer {0}", accessToken));
             return new HttpClientWrapper(httpClient);
         }
@@ -171,7 +174,7 @@ namespace Contentful.NET
         /// <typeparam name="T">The type to serialize the JSON to</typeparam>
         /// <param name="responseMessage">The HttpResponseMessage returned from the Contentful API</param>
         /// <returns>A new instance of class T, populated with the data from the JSON</returns>
-        public static async Task<T> GetItemAsync<T>(HttpResponseMessage responseMessage)
+        internal static async Task<T> GetItemAsync<T>(HttpResponseMessage responseMessage)
         {
             using (var streamReader = new StreamReader(await responseMessage.Content.ReadAsStreamAsync()))
             using (var jsonTextReader = new JsonTextReader(streamReader))

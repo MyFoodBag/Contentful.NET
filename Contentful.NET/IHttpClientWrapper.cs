@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Contentful.NET
 {
-    public interface IHttpClientWrapper
+    internal interface IHttpClientWrapper
     {
         Task<HttpResponseMessage> GetAsync(string requestUri, CancellationToken cancellationToken);
     }

@@ -5,7 +5,7 @@ namespace Contentful.NET.Search.Filters
     /// <summary>
     /// Filter which is used to skip a number of search results
     /// </summary>
-    public class SkipSearchFilter : ISearchFilter
+    internal class SkipSearchFilter : ISearchFilter
     {
         /// <summary>
         /// Always 'skip' for this filter
