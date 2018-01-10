@@ -37,3 +37,6 @@ using System.Runtime.InteropServices;
 
 // Expose internals to Contentful.NET.Tests
 [assembly: InternalsVisibleTo("Contentful.NET.Tests")]
+
+// Expose internals to Moq
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
