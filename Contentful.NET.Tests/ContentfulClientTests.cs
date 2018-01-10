@@ -224,19 +224,6 @@ namespace Contentful.NET.Tests
             Assert.AreEqual(assetId, asset.SystemProperties.Id);
         }
 
-        [Test]
-        public async Task TestCanMFB()
-        {
-            var client = new ContentfulClient(@"1168802daaf1508c9e8e3e41bd114b742a21a0448dbdf1a97251d4b64a8c9685", "xswp1j940j7n", false);
-
-            var results = await client.SearchAsync<Entry>(CancellationToken.None, new List<ISearchFilter>
-            {
-                new EqualitySearchFilter(BuiltInProperties.ContentType, "cardExtra")
-            });
-
-            Assert.IsTrue(results.Total > 0);
-        }
-
         private class MockJsonModel
         {
             public string StringValue { get; set; }
