@@ -30,7 +30,7 @@ namespace Contentful.NET
         /// <param name="accessToken">The access token for the provided space</param>
         /// <param name="space">The Space ID to query against</param>
 		/// /// <param name="preview">Whether to use the preview API, false by default</param>
-		internal ContentfulClient(string accessToken, string space, bool preview = false)
+		public ContentfulClient(string accessToken, string space, bool preview = false)
         {
 			_preview = preview;
             _space = space;
