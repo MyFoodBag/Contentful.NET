@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace Contentful.NET
         /// <param name="accessToken">The access token for the provided space</param>
         /// <param name="space">The Space ID to query against</param>
 		/// /// <param name="preview">Whether to use the preview API, false by default</param>
-		public ContentfulClient(string accessToken, string space, bool preview = false)
+		internal ContentfulClient(string accessToken, string space, bool preview = false)
         {
 			_preview = preview;
             _space = space;
@@ -159,6 +160,10 @@ namespace Contentful.NET
         internal static IHttpClientWrapper BuildHttpClient(string accessToken)
         {
             var httpClient = new HttpClient();
+
+            // NOTE: this is REQUIRED to use the non-legacy cdn url
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
             httpClient.DefaultRequestHeaders.Add("Authorization", string.Format("Bearer {0}", accessToken));
             return new HttpClientWrapper(httpClient);
         }

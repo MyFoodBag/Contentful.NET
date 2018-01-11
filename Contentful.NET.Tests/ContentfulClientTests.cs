@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -140,8 +141,8 @@ namespace Contentful.NET.Tests
         {
             var filters = new ISearchFilter[]
             {
-                new EqualitySearchFilter("title", "hello"), 
-                new EqualitySearchFilter("name", "test") 
+                new EqualitySearchFilter("title", "hello"),
+                new EqualitySearchFilter("name", "test")
             };
             var result = ContentfulClient.GetRequestUrl(RequestBaseUrl, filters: filters);
             Assert.AreEqual("http://test.com/?title=hello&name=test", result);
@@ -212,7 +213,7 @@ namespace Contentful.NET.Tests
             var client = new ContentfulClient("spaceId", mockHttpWrapper.Object);
             var results = await client.SearchAsync<Asset>(cancellationToken, new ISearchFilter[]
             {
-                new SkipSearchFilter(skip), 
+                new SkipSearchFilter(skip),
                 new LimitSearchFilter(limit)
             });
             Assert.IsNotNull(results);
